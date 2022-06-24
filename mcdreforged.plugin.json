@@ -1,0 +1,11 @@
+{
+    "id": "qq_whitelist",
+    "version": "1.0.0",
+    "name": "QQ Whitelist",
+    "description": "在群申请白名",
+    "author": "tangsu99",
+    "link": "https://github.com/tangsu99",
+    "dependencies": {
+        "mcdreforged": ">=2.0.0-alpha.1"
+    }
+}
