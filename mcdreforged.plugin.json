@@ -6,6 +6,7 @@
     "author": "tangsu99",
     "link": "https://github.com/tangsu99",
     "dependencies": {
-        "mcdreforged": ">=2.0.0-alpha.1"
-    }
+        "mcdreforged": ">=2.0.0-alpha.1",
+		"mc_uuid": "*"
+        }
 }

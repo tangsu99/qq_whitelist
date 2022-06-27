@@ -10,11 +10,18 @@ config = {
             'server_name': 'Creative',
             'rcon_address': '127.0.0.1',
             'rcon_port': 25575,
-            'rcon_password': 'PASSWORD'},
+            'rcon_password': 'PASSWORD'
+        },
         {
             'server_name': 'Mirror',
             'rcon_address': '127.0.0.1',
             'rcon_port': 25576,
+            'rcon_password': 'PASSWORD'
+        },
+        {
+            'server_name': 's',
+            'rcon_address': '127.0.0.1',
+            'rcon_port': 25570,
             'rcon_password': 'PASSWORD'
         }
     ],
@@ -36,15 +43,18 @@ whitelist = {
 }
 
 
-
 class websocket(websocket.WebSocketApp):
     ...
 
 
-def whfl ():
-    wh = open('./config/qq_whitelist/whitelist.json', 'r')
-    wh = json.loads(wh.read())
-    return wh
+def wlfl():
+    wlf = open('./config/qq_whitelist/whitelist.json', 'r')
+    try:
+        wlf = json.loads(wlf.read())
+    except:
+        return json.loads(str({}))
+    else:
+        return wlf
 
 
 def help_messag(src: CommandSource):
@@ -55,9 +65,30 @@ def help_messag(src: CommandSource):
 
 
 def open_whitelist(whitelist_file):
-    whitelist = open(whitelist_file, "r")
-    whitelist = json.loads(whitelist.read())
-    return whitelist
+    data = open(whitelist_file, "r")
+    data = json.loads(data.read())
+    return data
+
+
+def get_uuid(server: PluginServerInterface, player):
+    api = server.get_plugin_instance('mc_uuid')
+    return api.onlineUUID(player)
+
+
+def write_wl(server: PluginServerInterface, player, qq):
+    player_uuid = str(get_uuid(server, player))
+    uuid = player_uuid
+    player_uuid = {
+        'name': player,
+        'qq': qq,
+        'whitelist': True
+    }
+    whitelist.get(uuid)
+    whitelist[uuid] = player_uuid
+    data = json.dumps(whitelist)
+    wlf = open('./config/qq_whitelist/whitelist.json', 'w')
+    wlf.write(data)
+    wlf.close()
 
 
 def convert_vanilla_whitelist(ctx):
@@ -104,6 +135,7 @@ class Command:
         self.server = server
 
     def whitelist_add(self, ctx):
+        write_wl(self.server, ctx['player_name'], ctx['qq'])
         self.src.reply(ctx)
 
     def whitelist_remove_player(self, ctx):
@@ -113,7 +145,7 @@ class Command:
         self.src.reply(ctx)
 
     def whitelist_list(self, whitelist):
-        #self.src.reply()
+        # self.src.reply()
         self.src.reply(wlist())
 
     def sync_whitelist(self):
@@ -125,9 +157,7 @@ def on_load(server: PluginServerInterface, prev_module):
     config = server.load_config_simple('config.json', default_config)
 
     global whitelist
-    whitelist = whfl()
-
-    # rcon_command(server, config, ['tansgu99','1','2'])#debug
+    whitelist = wlfl()
 
     server.register_command(
         Literal(config['command_prefix']).runs(lambda src: help_messag(src)).
