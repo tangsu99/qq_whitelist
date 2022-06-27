@@ -136,7 +136,7 @@ class Command:
 
     def whitelist_add(self, ctx):
         write_wl(self.server, ctx['player_name'], ctx['qq'])
-        self.src.reply(ctx)
+        self.src.reply('白名单内玩家：'+ wlist())
 
     def whitelist_remove_player(self, ctx):
         self.src.reply(ctx)
